@@ -1,28 +1,44 @@
-const int  buttonPin = 4;
-const int ledPin = 13;
+#define BLYNK_PRINT Serial
 
-bool lastButtonState = LOW; // status tombol terakhir
-bool ledState = LOW; // status LED
+#define BLYNK_AUTH_TOKEN            "yxCNDT87eHSfNSqsOb_j4ecm1W5Mu-fI"
 
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+#define btnPin 4
+
+char ssid[] = "Tukang Ngoding";
+char pass[] = "kodingeverywhere"; 
+
+WidgetLED led3(V4);
+
+BlynkTimer timer;
+
+// V3 LED Widget represents the physical button state
+boolean btnState = false;
+void buttonLedWidget()
+{
+  // Read button
+  boolean isPressed = (digitalRead(btnPin) == HIGH);
+
+  // If state has changed...
+  if (isPressed != btnState) {
+    if (isPressed) {
+      led3.on();
+    } else {
+      led3.off();
+    }
+    btnState = isPressed;
+  }
+}
 void setup() {
-  pinMode(buttonPin, INPUT); // tombol sebagai input
-  pinMode(ledPin, OUTPUT); // LED sebagai output
+  Serial.begin(115200);
+  pinMode(btnPin, INPUT); // tombol sebagai input
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, "blynk.cloud", 80);
+  timer.setInterval(500L, buttonLedWidget);
 }
 
 void loop() {
-  bool buttonState = digitalRead(buttonPin); // cek status tombol
-  if (buttonState != lastButtonState) { // jika status tombol berubah dari sebelumnya
-    if (buttonState == LOW) { // jika tombol berubah ke status LOW (dilepas)
-      if (ledState == HIGH) { // jika status LED hidup
-        digitalWrite(ledPin, LOW); // maka LED dimatikan
-        ledState = LOW;
-      }
-      else { // jika status LED mati
-        digitalWrite(ledPin, HIGH); // maka LED dihidupkan
-        ledState = HIGH;
-      }
-    }
-    delay(50); // debounching
-  }
-  lastButtonState = buttonState; // simpan status tombol untuk loop selanjutnya
+  Blynk.run();
+  timer.run();
 }
