@@ -12,8 +12,8 @@
 #define L5 13
 #define L6 15
 
-char ssid[] = "LAPTOP";
-char pass[] = "laptopku";
+char ssid[] = "Tukang Ngoding";
+char pass[] = "kodingeverywhere";
 
 BLYNK_WRITE(V0) {
   digitalWrite(L1, param.asInt());
