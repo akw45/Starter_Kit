@@ -1,22 +1,46 @@
-int Status = 12;  // Digital pin D6
+#define BLYNK_PRINT Serial
 
-int sensor = 13;  // Digital pin D7
-void setup() {
-  Serial.begin(115200);
-  pinMode(sensor, INPUT);   // declare sensor as input
-  pinMode(Status, OUTPUT);  // declare LED as output
-}
-void loop() {
+#define BLYNK_AUTH_TOKEN            "oRP17_S_QER-8ZwKHleG1ltf-5W5KHIY"
 
-  long state = digitalRead(sensor);
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+#define PIR 5
+#define Buzzer 4
+
+char ssid[] = "Tukang Ngoding";
+char pass[] = "kodingeverywhere";
+
+WidgetLED led3(V3);
+
+BlynkTimer timer;
+
+void sensorPIR() {
+  String h = "Gerakan Terdeteksi";
+  String c = "Tidak Terdeteksi";
+  long state = digitalRead(PIR);
   if (state == HIGH) {
-    digitalWrite (Status, HIGH);
+    Blynk.virtualWrite(V2, h);
+    led3.on();
+    digitalWrite (Buzzer, HIGH);
     Serial.println("Motion detected!");
-//    delay(500);
   }
   else {
-    digitalWrite (Status, LOW);
+    Blynk.virtualWrite(V2, c);
+    led3.off();
+    digitalWrite (Buzzer, LOW);
     Serial.println("Motion absent!");
-//    delay(500);
   }
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(PIR, INPUT);   // declare sensor as input
+  pinMode(Buzzer, OUTPUT);  // declare LED as output
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, "blynk.cloud", 80);
+  timer.setInterval(500L, sensorPIR);
+}
+void loop() {
+  Blynk.run();
+  timer.run();
 }

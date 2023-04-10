@@ -78,10 +78,6 @@ void loop() {
   rfid.PCD_StopCrypto1();
 }
 
-
-/**
-   Helper routine to dump a byte array as hex values to Serial.
-*/
 void printHex(byte *buffer, byte bufferSize) {
   for (byte i = 0; i < bufferSize; i++) {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
@@ -89,9 +85,6 @@ void printHex(byte *buffer, byte bufferSize) {
   }
 }
 
-/**
-   Helper routine to dump a byte array as dec values to Serial.
-*/
 void printDec(byte *buffer, byte bufferSize) {
   for (byte i = 0; i < bufferSize; i++) {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
